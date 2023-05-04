@@ -1,4 +1,4 @@
-name = "partial-summary"
+name = "summarization"
 compatibility_date = "2023-05-04"
 
 [vars]
