@@ -4,6 +4,8 @@ export type Bindings = {
   GPT_MODEL: string;
   OPENAI_API_KEY: string;
   OPENAI_BASE_URL: string;
+  USERNAME: string;
+  PASSWORD: string;
 };
 
 const choices = z.array(
