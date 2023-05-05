@@ -1,0 +1,15 @@
+{
+  "name": "webpage-summarizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "MasashiFukuzawa",
+  "license": "CC BY-NC 4.0",
+  "devDependencies": {
+    "@types/google-apps-script": "^1.0.62",
+    "typescript": "^5.0.4"
+  }
+}
