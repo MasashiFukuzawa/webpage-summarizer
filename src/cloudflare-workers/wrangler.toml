@@ -1,4 +1,4 @@
-name = "summarization"
+name = "summarize-by-chatgpt"
 compatibility_date = "2023-05-04"
 
 [vars]

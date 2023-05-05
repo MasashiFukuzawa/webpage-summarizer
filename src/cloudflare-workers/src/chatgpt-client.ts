@@ -1,10 +1,15 @@
 import { Bindings, chatgptSchema } from './schema';
 
-const prompt = (input: string): string => {
+const prompt = (input: string) => {
   return `# Instruction
-  Please summarize the main points of the input statement in 5 lines. Each item should be summarized in 150 characters or less.
-  If the input is in English, the output should be converted to Japanese.
-  Note that the input text, although incomplete, is output in Markdown, especially the parts that correspond to the major items marked with \`#\`, the parts highlighted in bold, and the bulleted parts.
+Summarize the input text (a document in Markdown format) according to the following constraints:
+Emphasize the headings, bolded text, and bulleted points as they are particularly important. Focus on summarizing these key elements.
+Feel free to ignore less important sentences.
+
+# Constraints
+- Keep the summary within 300 characters.
+- Output the summary in Japanese.
+- If the content is a meaningless list of strings or does not form a coherent summary, it is okay not to output anything.
 
 # Input
 ${input}
