@@ -1,6 +1,0 @@
-name = "summarize-by-chatgpt"
-compatibility_date = "2023-05-04"
-
-[vars]
-GPT_MODEL = "gpt-3.5-turbo"
-OPENAI_BASE_URL = "https://api.openai.com"
