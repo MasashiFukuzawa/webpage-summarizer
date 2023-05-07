@@ -1,7 +1,5 @@
 const IGNORE_PREFIX = '[ERROR]';
 
-const today = new Date().toLocaleDateString();
-
 const getPromptData = (): PromptData => {
   const promptSheet = getSheet('prompts');
 
@@ -97,6 +95,8 @@ const summarize = (): void => {
       logError(error);
     }
   });
+
+  filterLatestSummaries();
 
   if (error) {
     throw new Error('Error occurred. Please check the log.');

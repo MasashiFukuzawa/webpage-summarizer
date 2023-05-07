@@ -3,8 +3,10 @@ const START_COLUMN_NUM = 1;
 
 const HEADER_ROW_NUM = 1;
 
+const today = new Date().toLocaleDateString();
+
 const getSheet = (
-  sheetName: 'summaries' | 'prompts'
+  sheetName: 'summaries' | 'prompts' | 'error_logs' | 'latest_summaries'
 ): GoogleAppsScript.Spreadsheet.Sheet => {
   const spreadsheetId =
     PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID')!;
@@ -56,10 +58,7 @@ const getSummaryData = (filter: (row: Summary) => boolean): SummaryData => {
 };
 
 const logError = (error: Error) => {
-  const sheetName = 'error_logs';
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  let logsSheet = spreadsheet.getSheetByName(sheetName)!;
-
+  const logsSheet = getSheet('error_logs');
   const timestamp = new Date();
   const errorMessage = error.message;
   const errorStack = error.stack;
