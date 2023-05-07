@@ -19,9 +19,10 @@
     const turndownService = new TurndownService();
     const markdown = turndownService.turndown(clonedBody.innerHTML);
 
-    // Replace the URL part of the Markdown format with an empty string.
-    const markdownUrlRegex = /\[(.*?)\]\((https?:\/\/[^\s\)]+)\)/g;
-    const trimmedMarkdown = markdown.replace(markdownUrlRegex, '[$1]()');
+    // We remove the contents of the parentheses
+    // because we believe that they often contain URLs, supplementary information,
+    // and other strings that are meaningless to ChatGPT.
+    const trimmedMarkdown = markdown.replace(/\([^()]*\)/g, '');
 
     const newWindow = window.open();
     newWindow.document.write('<pre>' + trimmedMarkdown + '</pre>');
