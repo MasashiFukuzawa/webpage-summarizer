@@ -67,6 +67,13 @@ const summarize = (): void => {
 
   const { partialPrompt, fullPrompt } = getPromptData();
 
+  rows.forEach((row) => {
+    summarySheet
+      .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
+      .setValues([[row.content, 'Processing...', row.url, today]]);
+    SpreadsheetApp.flush();
+  });
+
   let error: Error | null = null;
   rows.forEach((row) => {
     try {
@@ -78,8 +85,7 @@ const summarize = (): void => {
         partialSummary = getPartialSummary(partialPrompt, row.content);
       }
 
-      const fullSummary =
-        i > 1 ? getFullSummary(fullPrompt, partialSummary) : partialSummary;
+      const fullSummary = getFullSummary(fullPrompt, partialSummary);
 
       summarySheet
         .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
