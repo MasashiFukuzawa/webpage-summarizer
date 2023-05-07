@@ -48,3 +48,7 @@ type ChatgptResponse = {
   choices: Choice[];
   usage: Usage;
 };
+
+type ParserAPIResponse = {
+  markdown: string;
+};

@@ -1,6 +1,14 @@
 const MAX_LENGTH_IN_A_CELL = 50_000;
 const HTML_PARSING_ERROR_MESSAGE = '[ERROR] HTML parsing failed.';
 
+const errorOccurred = (markdown: string): boolean => {
+  const first100Chars = markdown.slice(0, 100);
+  return (
+    first100Chars.toLowerCase().includes('not found') ||
+    first100Chars.includes('404')
+  );
+};
+
 const saveContentsByUrls = (): void => {
   const filter = (row: Summary) => !!row.url && !row.content;
 
@@ -17,6 +25,10 @@ const saveContentsByUrls = (): void => {
         const error = e as Error;
         logError(error);
         markdown = HTML_PARSING_ERROR_MESSAGE;
+      }
+
+      if (errorOccurred(markdown)) {
+        markdown = `[ERROR] ${markdown}`;
       }
 
       // NOTE: The maximum number of characters that can be set
