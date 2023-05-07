@@ -41,6 +41,8 @@ const saveContentsByUrls = (): void => {
       summarySheet
         .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
         .setValues([[markdown, null, row.url, null]]);
+
+      SpreadsheetApp.flush();
     });
   } catch (e) {
     const error = e as Error;

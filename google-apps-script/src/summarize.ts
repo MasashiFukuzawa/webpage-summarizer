@@ -77,11 +77,15 @@ const summarize = (): void => {
         i++;
         partialSummary = getPartialSummary(partialPrompt, row.content);
       }
+
       const fullSummary =
         i > 1 ? getFullSummary(fullPrompt, partialSummary) : partialSummary;
+
       summarySheet
         .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
         .setValues([[row.content, fullSummary, row.url, today]]);
+
+      SpreadsheetApp.flush();
     } catch (e) {
       error = e as Error;
       logError(error);
