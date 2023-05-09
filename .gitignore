@@ -1,5 +1,7 @@
 node_modules
 
+dist
+
 sample_html.txt
 sample_result.txt
 

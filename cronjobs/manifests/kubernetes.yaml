@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: webpage-summarizer
+spec:
+  # https://crontab.guru/#*/5_*_*_*_*
+  schedule: '*/10 * * * *'
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  concurrencyPolicy: Forbid
+  suspend: false # set to false to enable the cronjob
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: webpage-summarizer
+              image: masashifukuzawa/webpage-summarizer:v0.1.2
+              command:
+                - sh
+                - -c
+                - |
+                  #!/bin/bash
+                  set -e
+                  url_list=$(curl -s -L ${WEBPAGE_SUMMARIZER_API_URL}?apiKey=${WEBPAGE_SUMMARIZER_API_KEY} -H "Content-Type: application/json" | jq -r '.urls[]')
+                  echo ${url_list}
+                  for url in ${url_list}; do
+                    html=$(curl -s -L ${url})
+                    node ./dist/main.js "${url}" "${html}"
+                  done
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: WEBPAGE_SUMMARIZER_API_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: webpage-summarizer-secrets
+                      key: WEBPAGE_SUMMARIZER_API_URL
+                - name: WEBPAGE_SUMMARIZER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: webpage-summarizer-secrets
+                      key: WEBPAGE_SUMMARIZER_API_KEY
+          restartPolicy: Never
