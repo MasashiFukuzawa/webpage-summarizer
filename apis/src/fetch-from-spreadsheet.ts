@@ -57,10 +57,29 @@ const getSummaryData = (filter: (row: Summary) => boolean): SummaryData => {
   return { rows, summarySheet, lastColumn };
 };
 
-const logError = (error: Error) => {
-  const logsSheet = getSheet('error_logs');
-  const timestamp = new Date();
-  const errorMessage = error.message;
-  const errorStack = error.stack;
-  logsSheet.appendRow([timestamp, errorMessage, errorStack]);
+const getPromptData = (): PromptData => {
+  const promptSheet = getSheet('prompts');
+
+  const lastRow = promptSheet.getLastRow();
+  const lastColumn = promptSheet.getLastColumn();
+
+  const instructionColumnNum = 1;
+  const constraintsColumnNum = 2;
+  const typeColumnNum = 3;
+
+  const prompts: Prompt[] = getFullData(promptSheet, lastRow, lastColumn)
+    .map((row, i) => {
+      return {
+        // index starts from 0, but row number starts from 1.
+        instruction: row[instructionColumnNum - 1],
+        constraints: row[constraintsColumnNum - 1],
+        type: row[typeColumnNum - 1],
+        rowNum: i + START_ROW_NUM,
+      };
+    })
+    .filter((row) => !!row);
+  const partialPrompt = prompts.find((prompt) => prompt.type === 'partial')!;
+  const fullPrompt = prompts.find((prompt) => prompt.type === 'full')!;
+
+  return { partialPrompt, fullPrompt };
 };
