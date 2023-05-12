@@ -2,7 +2,7 @@ type Summary = {
   content: string;
   summary: string;
   url: string;
-  date: Date;
+  date: string;
   rowNum: number;
 };
 

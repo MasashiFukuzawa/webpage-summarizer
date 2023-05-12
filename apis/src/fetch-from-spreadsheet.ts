@@ -3,7 +3,11 @@ const START_COLUMN_NUM = 1;
 
 const HEADER_ROW_NUM = 1;
 
-const today = new Date().toLocaleDateString();
+declare const dayjs: {
+  dayjs(arg?: any): any;
+};
+
+const today = (): string => dayjs.dayjs().format('YYYY/M/D');
 
 const getSheet = (
   sheetName: 'summaries' | 'prompts' | 'error_logs' | 'latest_summaries'

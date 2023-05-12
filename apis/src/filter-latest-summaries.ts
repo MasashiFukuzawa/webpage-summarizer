@@ -1,11 +1,11 @@
 const filterLatestSummaries = () => {
   const filter = (row: Summary) => {
-    return row.date.toLocaleDateString() === today && !!row.summary;
+    return row.date === today() && !!row.summary;
   };
 
   const latestSummaries = getSummaryData(filter).rows;
 
-  if (!latestSummaries) return;
+  if (!latestSummaries.length) return;
 
   const endColumnNum = 3;
 

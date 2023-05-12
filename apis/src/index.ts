@@ -27,7 +27,7 @@ const doGet = (
 };
 
 /**
- * Handles POST requests to the web app. Summarizes the content of the specified URL and updates the summary sheet with the results.
+ * Handles POST requests to the web app. Updates the summary sheet with the results.
  * @param {GoogleAppsScript.Events.DoPost} e - The event object representing the POST request.
  * @returns {GoogleAppsScript.Content.TextOutput} The text output indicating whether the summarization was successful or not.
  * @throws {Error} If the request is not authorized or if there is an error summarizing the content.
@@ -35,57 +35,38 @@ const doGet = (
 const doPost = (
   e: GoogleAppsScript.Events.DoPost
 ): GoogleAppsScript.Content.TextOutput => {
-  authorize(e.parameter.apiKey);
+  let error: Error | null = null;
 
-  const url = e.parameter.url;
-  const markdown = e.parameter.markdown;
+  try {
+    const params = JSON.parse(e.postData.contents);
 
-  const filter = (row: Summary) => url === row.url && !row.summary;
+    authorize(params.apiKey);
 
-  const { rows, summarySheet, lastColumn } = getSummaryData(filter);
-  if (!rows) {
-    return ContentService.createTextOutput('There is no target.').setMimeType(
+    const url = params.url;
+    const markdown = params.markdown;
+
+    const filter = (row: Summary) => url === row.url.trim() && !row.summary;
+    const { rows, summarySheet, lastColumn } = getSummaryData(filter);
+    if (!rows.length) {
+      return ContentService.createTextOutput('There is no target.').setMimeType(
+        ContentService.MimeType.TEXT
+      );
+    }
+
+    rows.forEach((row) => {
+      summarySheet
+        .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
+        .setValues([[markdown, null, url, today]]);
+    });
+  } catch (e) {
+    error = e as Error;
+    logError(error);
+  } finally {
+    const message = !error
+      ? 'Success!'
+      : 'Error occurred. Please check the log.';
+    return ContentService.createTextOutput(message).setMimeType(
       ContentService.MimeType.TEXT
     );
   }
-
-  rows.forEach((row) => {
-    summarySheet
-      .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-      .setValues([[markdown, 'Processing...', url, today]]);
-    SpreadsheetApp.flush();
-  });
-
-  const { partialPrompt, fullPrompt } = getPromptData();
-
-  let error: Error | null = null;
-  rows.forEach((row) => {
-    try {
-      // Loop until partialSummary is within 3000 characters.
-      let partialSummary = '';
-      let i = 0;
-      while (!partialSummary || partialSummary.length > 3000) {
-        i++;
-        partialSummary = getPartialSummary(partialPrompt, row.content);
-      }
-
-      const fullSummary = getFullSummary(fullPrompt, partialSummary);
-
-      summarySheet
-        .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-        .setValues([[markdown, fullSummary, url, today]]);
-
-      SpreadsheetApp.flush();
-    } catch (e) {
-      error = e as Error;
-      logError(error);
-    }
-  });
-
-  filterLatestSummaries();
-
-  const message = !error ? 'Success!' : 'Error occurred. Please check the log.';
-  return ContentService.createTextOutput(message).setMimeType(
-    ContentService.MimeType.TEXT
-  );
 };

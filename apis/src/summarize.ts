@@ -26,3 +26,41 @@ const getPartialSummary = (prompt: Prompt, input: string): string => {
 const getFullSummary = (prompt: Prompt, partialSummary: string): string => {
   return requestToChatGPT(prompt, partialSummary);
 };
+
+const summarize = () => {
+  const filter = (row: Summary) => !!row.content && !row.summary;
+  const { rows, summarySheet, lastColumn } = getSummaryData(filter);
+  if (!rows) return;
+
+  const { partialPrompt, fullPrompt } = getPromptData();
+
+  rows.forEach((row) => {
+    summarySheet
+      .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
+      .setValues([[row.content, 'Processing...', row.url, today()]]);
+    SpreadsheetApp.flush();
+
+    try {
+      // Loop until partialSummary is within 3000 characters.
+      let partialSummary = '';
+      let i = 0;
+      while (!partialSummary || partialSummary.length > 3000) {
+        i++;
+        partialSummary = getPartialSummary(partialPrompt, row.content);
+      }
+
+      const fullSummary = getFullSummary(fullPrompt, partialSummary);
+
+      summarySheet
+        .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
+        .setValues([[row.content, fullSummary, row.url, today()]]);
+
+      SpreadsheetApp.flush();
+    } catch (e) {
+      const error = e as Error;
+      logError(error);
+    }
+  });
+
+  filterLatestSummaries();
+};

@@ -5,8 +5,8 @@ metadata:
 spec:
   # https://crontab.guru/#*/5_*_*_*_*
   schedule: '*/10 * * * *'
-  successfulJobsHistoryLimit: 5
-  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
   suspend: false # set to false to enable the cronjob
   jobTemplate:
@@ -15,7 +15,7 @@ spec:
         spec:
           containers:
             - name: webpage-summarizer
-              image: masashifukuzawa/webpage-summarizer:v0.1.2
+              image: masashifukuzawa/webpage-summarizer:v0.1.5
               command:
                 - sh
                 - -c
@@ -26,7 +26,10 @@ spec:
                   echo ${url_list}
                   for url in ${url_list}; do
                     html=$(curl -s -L ${url})
-                    node ./dist/main.js "${url}" "${html}"
+                    tmpfile=$(mktemp)
+                    echo "${html}" > "${tmpfile}"
+                    node ./dist/main.js "${url}" "${tmpfile}"
+                    rm "${tmpfile}"
                   done
               imagePullPolicy: IfNotPresent
               env:
