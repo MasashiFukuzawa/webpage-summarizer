@@ -4,7 +4,7 @@ metadata:
   name: webpage-summarizer
 spec:
   # https://crontab.guru/#*/5_*_*_*_*
-  schedule: '*/10 * * * *'
+  schedule: '*/1 * * * *'
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
