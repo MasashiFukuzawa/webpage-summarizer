@@ -56,7 +56,7 @@ const doPost = (
     rows.forEach((row) => {
       summarySheet
         .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-        .setValues([[markdown, null, url, today]]);
+        .setValues([[markdown, null, url, today()]]);
     });
   } catch (e) {
     error = e as Error;
