@@ -43,7 +43,7 @@ const doPost = (
     authorize(params.apiKey);
 
     const url = params.url;
-    const markdown = params.markdown;
+    let markdown = params.markdown;
 
     const filter = (row: Summary) => url === row.url.trim() && !row.summary;
     const { rows, summarySheet, lastColumn } = getSummaryData(filter);
@@ -51,6 +51,12 @@ const doPost = (
       return ContentService.createTextOutput('There is no target.').setMimeType(
         ContentService.MimeType.TEXT
       );
+    }
+
+    // NOTE: The string is concatenated by dividing it into 50000 characters
+    // because the maximum number in a google spreadsheet cell is 50000.
+    if (markdown.length > 50000) {
+      markdown = markdown.substring(0, 50000);
     }
 
     rows.forEach((row) => {

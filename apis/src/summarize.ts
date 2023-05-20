@@ -47,6 +47,10 @@ const summarize = () => {
       while (!partialSummary || partialSummary.length > 3000) {
         i++;
         partialSummary = getPartialSummary(partialPrompt, row.content);
+        summarySheet
+          .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
+          .setValues([[row.content, partialSummary, row.url, today()]]);
+        SpreadsheetApp.flush();
       }
 
       const fullSummary = getFullSummary(fullPrompt, partialSummary);
@@ -54,7 +58,6 @@ const summarize = () => {
       summarySheet
         .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
         .setValues([[row.content, fullSummary, row.url, today()]]);
-
       SpreadsheetApp.flush();
     } catch (e) {
       const error = e as Error;
