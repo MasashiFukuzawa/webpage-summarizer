@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: webpage-summarizer
 spec:
-  # https://crontab.guru/#*/5_*_*_*_*
+  # https://crontab.guru/#*/1_*_*_*_*
   schedule: '*/1 * * * *'
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
@@ -15,7 +15,7 @@ spec:
         spec:
           containers:
             - name: webpage-summarizer
-              image: masashifukuzawa/webpage-summarizer:v0.1.5
+              image: masashifukuzawa/webpage-summarizer:v0.1.6
               command:
                 - sh
                 - -c
