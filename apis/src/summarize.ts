@@ -34,36 +34,39 @@ const summarize = () => {
 
   const { partialPrompt, fullPrompt } = getPromptData();
 
-  rows.forEach((row) => {
-    summarySheet
-      .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-      .setValues([[row.content, 'Processing...', row.url, today()]]);
-    SpreadsheetApp.flush();
+  // NOTE: GAS must finish processing within 6min.
+  // Since summarization by ChatGPT is a somewhat time-consuming process,
+  // only the first one is processed to avoid timeout errors.
+  const row = rows[0];
 
-    try {
-      // Loop until partialSummary is within 3000 characters.
-      let partialSummary = '';
-      let i = 0;
-      while (!partialSummary || partialSummary.length > 3000) {
-        i++;
-        partialSummary = getPartialSummary(partialPrompt, row.content);
-        summarySheet
-          .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-          .setValues([[row.content, partialSummary, row.url, today()]]);
-        SpreadsheetApp.flush();
-      }
+  summarySheet
+    .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
+    .setValues([[row.content, 'Processing...', row.url, today()]]);
+  SpreadsheetApp.flush();
 
-      const fullSummary = getFullSummary(fullPrompt, partialSummary);
-
+  try {
+    // Loop until partialSummary is within 3000 characters.
+    let partialSummary = '';
+    let i = 0;
+    while (!partialSummary || partialSummary.length > 3000) {
+      i++;
+      partialSummary = getPartialSummary(partialPrompt, row.content);
       summarySheet
         .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-        .setValues([[row.content, fullSummary, row.url, today()]]);
+        .setValues([[row.content, partialSummary, row.url, today()]]);
       SpreadsheetApp.flush();
-    } catch (e) {
-      const error = e as Error;
-      logError(error);
     }
-  });
+
+    const fullSummary = getFullSummary(fullPrompt, partialSummary);
+
+    summarySheet
+      .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
+      .setValues([[row.content, fullSummary, row.url, today()]]);
+    SpreadsheetApp.flush();
+  } catch (e) {
+    const error = e as Error;
+    logError(error);
+  }
 
   filterLatestSummaries();
 };
