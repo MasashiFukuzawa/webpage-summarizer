@@ -1,3 +1,16 @@
+const trimmedLongTextByLength = (
+  inputString: string,
+  maxLength: number = 12000
+): string => {
+  if (inputString.length <= maxLength) {
+    return inputString;
+  }
+  const trimmedLength = inputString.length - maxLength;
+  const trimmedStartIndex = Math.floor(trimmedLength / 2);
+  const trimmedEndIndex = inputString.length - Math.floor(trimmedLength / 2);
+  return inputString.slice(trimmedStartIndex, trimmedEndIndex);
+};
+
 const splitLongTextByLength = (
   inputString: string,
   length = 3000
@@ -9,10 +22,13 @@ const splitLongTextByLength = (
   return chunks.filter((c) => !!c);
 };
 
-// The string is concatenated by dividing it into 3000 characters
-// and summarizing each time.
 const getPartialSummary = (prompt: Prompt, input: string): string => {
-  const splittedInputs = splitLongTextByLength(input);
+  // Input is trimmed to 12000 characters.
+  const trimmedInput = trimmedLongTextByLength(input);
+
+  // The string is concatenated by dividing it into 3000 characters
+  // and summarizing each time.
+  const splittedInputs = splitLongTextByLength(trimmedInput);
 
   let partialSummary = '';
   for (const input of splittedInputs) {
@@ -27,10 +43,36 @@ const getFullSummary = (prompt: Prompt, partialSummary: string): string => {
   return requestToChatGPT(prompt, partialSummary);
 };
 
+const updateCell = (
+  summarySheet: GoogleAppsScript.Spreadsheet.Sheet,
+  row: Summary,
+  text: string,
+  lastColumn: number
+) => {
+  summarySheet
+    .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
+    .setValues([[row.content, text, row.url, today()]]);
+  SpreadsheetApp.flush();
+};
+
+const isWithinOneMinute = (now: Date, lastExecution: string) => {
+  return now.getTime() - new Date(lastExecution).getTime() < 1 * 60 * 1000;
+};
+
 const summarize = () => {
+  const now = new Date();
+  const lastExecution =
+    PropertiesService.getScriptProperties().getProperty('lastExecution');
+
+  // NOTE: Avoiding ChatGPT API rate limit errors
+  // by avoiding concentrated requests
+  if (lastExecution && isWithinOneMinute(now, lastExecution)) {
+    return;
+  }
+
   const filter = (row: Summary) => !!row.content && !row.summary;
   const { rows, summarySheet, lastColumn } = getSummaryData(filter);
-  if (!rows) return;
+  if (!rows.length) return;
 
   const { partialPrompt, fullPrompt } = getPromptData();
 
@@ -39,10 +81,7 @@ const summarize = () => {
   // only the first one is processed to avoid timeout errors.
   const row = rows[0];
 
-  summarySheet
-    .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-    .setValues([[row.content, 'Processing...', row.url, today()]]);
-  SpreadsheetApp.flush();
+  updateCell(summarySheet, row, 'Processing...', lastColumn);
 
   try {
     // Loop until partialSummary is within 3000 characters.
@@ -51,18 +90,12 @@ const summarize = () => {
     while (!partialSummary || partialSummary.length > 3000) {
       i++;
       partialSummary = getPartialSummary(partialPrompt, row.content);
-      summarySheet
-        .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-        .setValues([[row.content, partialSummary, row.url, today()]]);
-      SpreadsheetApp.flush();
+      updateCell(summarySheet, row, partialSummary, lastColumn);
     }
 
     const fullSummary = getFullSummary(fullPrompt, partialSummary);
 
-    summarySheet
-      .getRange(row.rowNum, START_COLUMN_NUM, 1, lastColumn)
-      .setValues([[row.content, fullSummary, row.url, today()]]);
-    SpreadsheetApp.flush();
+    updateCell(summarySheet, row, fullSummary, lastColumn);
   } catch (e) {
     const error = e as Error;
     logError(error);

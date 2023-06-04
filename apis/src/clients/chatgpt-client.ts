@@ -1,6 +1,8 @@
 const OPENAI_BASE_URL = 'https://api.openai.com';
 const OPENAI_API_KEY =
   PropertiesService.getScriptProperties().getProperty('OPENAI_API_KEY')!;
+const MAX_RETRY_COUNT = 3;
+const RETRY_STATUS_CODES = [429, 500, 502, 503, 504];
 
 const buildPrompt = (prompt: Prompt, input: string) => {
   return `# 命令
@@ -17,30 +19,60 @@ ${input}
 `;
 };
 
+const errorMessage = (status: number, response: string): string => {
+  return `Failed to request to ChatGPT. status: ${status}, response: ${response}`;
+};
+
 const requestToChatGPT = (prompt: Prompt, input: string): string => {
-  const response = UrlFetchApp.fetch(`${OPENAI_BASE_URL}/v1/chat/completions`, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
-    },
-    payload: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: buildPrompt(prompt, input) }],
-    }),
-    muteHttpExceptions: true,
-  });
+  let retryCount = 0;
 
-  if (response.getResponseCode() !== 200) {
-    return `Error: status=${response.getResponseCode()} response=${response.getContentText()}`;
+  while (true) {
+    const response = UrlFetchApp.fetch(
+      `${OPENAI_BASE_URL}/v1/chat/completions`,
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+        },
+        payload: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: buildPrompt(prompt, input) }],
+        }),
+        muteHttpExceptions: true,
+      }
+    );
+
+    PropertiesService.getScriptProperties().setProperty(
+      'lastExecution',
+      new Date().toString()
+    );
+
+    const status = response.getResponseCode();
+    const rawResponse = response.getContentText();
+    const responseObject: ChatgptResponse = JSON.parse(rawResponse);
+
+    if (retryCount >= MAX_RETRY_COUNT) {
+      return errorMessage(status, rawResponse);
+    }
+
+    if (RETRY_STATUS_CODES.includes(status)) {
+      retryCount++;
+      // exponential backoff (20s -> 40s -> 90s)
+      Utilities.sleep(retryCount ** 2 * 10 * 1000);
+      continue;
+    }
+
+    if (status !== 200) {
+      throw new Error(errorMessage(status, rawResponse));
+    }
+
+    const output = responseObject.choices[0].message.content;
+
+    if (!output) {
+      return 'No output.';
+    }
+
+    return output;
   }
-
-  const responseObject: ChatgptResponse = JSON.parse(response.getContentText());
-  const output = responseObject.choices[0].message.content;
-
-  if (!output) {
-    return 'No output.';
-  }
-
-  return output;
 };

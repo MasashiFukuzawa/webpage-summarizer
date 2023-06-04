@@ -13,12 +13,6 @@ const doGet = (
 
   const { rows } = getSummaryData(filter);
 
-  if (!rows) {
-    return ContentService.createTextOutput(
-      JSON.stringify({ urls: [] })
-    ).setMimeType(ContentService.MimeType.JSON);
-  }
-
   const urls = rows.map((row) => row.url);
 
   return ContentService.createTextOutput(JSON.stringify({ urls })).setMimeType(
