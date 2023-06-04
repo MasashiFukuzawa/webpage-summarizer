@@ -24,11 +24,14 @@ tree . -I node_modules
 │   │   ├── index.ts
 │   │   ├── log-error.ts
 │   │   ├── schema.ts
-│   │   └── summarize.ts
+│   │   ├── summarize.ts
+│   │   └── triggers.ts
 │   └── tsconfig.json
 ├── cronjobs
 │   ├── Dockerfile
 │   ├── README.md
+│   ├── dist
+│   │   └── main.js
 │   ├── manifests
 │   │   ├── kubernetes.yaml
 │   │   └── secrets.yaml
@@ -40,10 +43,11 @@ tree . -I node_modules
 └── scripts
     └── bookmarklet
         ├── bookmarklet-formatter.sh
+        ├── sample_result.txt
         ├── webpage-summary-bookmarklet.js
         └── webpage-summary-bookmarklet.txt
 
-9 directories, 27 files
+9 directories, 28 files
 ```
 
 ## Setup
@@ -65,6 +69,8 @@ npm install -g @google/clasp
 
 ```sh
 cd apis
+npm install
+
 clasp login
 clasp create --title "webpage-summarizer" --type sheets --rootDir ./src
 clasp push --force
