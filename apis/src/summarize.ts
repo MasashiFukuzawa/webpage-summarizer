@@ -1,6 +1,6 @@
 const trimmedLongTextByLength = (
   inputString: string,
-  maxLength: number = 30_000
+  maxLength: number = 15_000
 ): string => {
   if (inputString.length <= maxLength) {
     return inputString;
@@ -13,7 +13,7 @@ const trimmedLongTextByLength = (
 
 const splitLongTextByLength = (
   inputString: string,
-  length = 10_000
+  length = 8000
 ): string[] => {
   const chunks = [];
   for (let i = 0; i < inputString.length; i += length) {
@@ -23,10 +23,10 @@ const splitLongTextByLength = (
 };
 
 const getPartialSummary = (prompt: Prompt, input: string): string => {
-  // Input is trimmed to 30_000 characters.
+  // Input is trimmed to 15_000 characters.
   const trimmedInput = trimmedLongTextByLength(input);
 
-  // The string is concatenated by dividing it into 10_000 characters
+  // The string is concatenated by dividing it into 8000 characters
   // and summarizing each time.
   const splittedInputs = splitLongTextByLength(trimmedInput);
 
