@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@types/jsdom": "^21.1.1",
-    "@types/node": "^20.4.1",
+    "@types/node": "^20.4.2",
     "@types/node-fetch": "^2.6.4",
     "@types/turndown": "^5.0.1",
     "ts-node": "^10.9.1",
