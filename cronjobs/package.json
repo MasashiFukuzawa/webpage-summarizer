@@ -13,7 +13,7 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@types/jsdom": "^21.1.1",
+    "@types/jsdom": "^21.1.2",
     "@types/node": "^20.4.10",
     "@types/node-fetch": "^2.6.4",
     "@types/turndown": "^5.0.1",
