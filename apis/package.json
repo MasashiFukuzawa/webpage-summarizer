@@ -9,7 +9,7 @@
   "author": "MasashiFukuzawa",
   "license": "MIT",
   "devDependencies": {
-    "@types/google-apps-script": "^1.0.70",
+    "@types/google-apps-script": "^1.0.75",
     "typescript": "^5.2.2",
     "dayjs": "^1.11.10"
   }
