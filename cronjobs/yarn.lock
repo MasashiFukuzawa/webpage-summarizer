@@ -79,10 +79,10 @@
   resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-4.0.2.tgz#6286b4c7228d58ab7866d19716f3696e03a09397"
   integrity sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==
 
-"@types/turndown@^5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@types/turndown/-/turndown-5.0.2.tgz#947138408c6ef0f8ead821d45ca89b329f531c72"
-  integrity sha512-ghbjIyvMSQn/UGEuQJD6C4DfbokyYqGRhNAetWH02qnuRfvRZz9qTOG9e0RPkVqGsjv+YsjF3gRp7yFKvc/1PA==
+"@types/turndown@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@types/turndown/-/turndown-5.0.3.tgz#6ae194468558819461b6713bc76e3535975398b7"
+  integrity sha512-2PCZA9g/dkeHIGTf6ESMOD3Gz5RMpDzODtvlBbkLAdtKa/yTQDAFudDEVolHjaBUnu8ugd8BeTCWk4x0STnqkA==
 
 abab@^2.0.6:
   version "2.0.6"
