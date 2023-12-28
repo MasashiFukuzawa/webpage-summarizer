@@ -28,13 +28,9 @@ tree . -I node_modules
 │   │   └── triggers.ts
 │   └── tsconfig.json
 ├── cronjobs
-│   ├── Dockerfile
 │   ├── README.md
 │   ├── dist
 │   │   └── main.js
-│   ├── manifests
-│   │   ├── kubernetes.yaml
-│   │   └── secrets.yaml
 │   ├── package.json
 │   ├── src
 │   │   └── main.ts
@@ -43,17 +39,19 @@ tree . -I node_modules
 └── scripts
     └── bookmarklet
         ├── bookmarklet-formatter.sh
-        ├── sample_result.txt
         ├── webpage-summary-bookmarklet.js
         └── webpage-summary-bookmarklet.txt
 
-9 directories, 28 files
+8 directories, 24 files
 ```
 
 ## Setup
 
+Folk this repository and clone it.
+
 ```sh
-git clone git@github.com:MasashiFukuzawa/webpage-summarizer.git
+# example
+git clone git@github.com:${YOUR_GITHUB_USER_NAME}/webpage-summarizer.git
 ```
 
 ### Apis (Google Apps Script)
@@ -107,25 +105,10 @@ clasp open
 7. Copy your API URL and WEBPAGE_SUMMARIZER_API_KEY
 8. Set triggers if needed
 
-### Cronjobs (Okteto)
+### Cronjobs
 
-1. Create your account
-2. Install Okteto CLI: https://www.okteto.com/docs/getting-started/#installing-okteto-cli
-3. Setup Okteto CLI: https://www.okteto.com/docs/getting-started/#configuring-okteto-cli-with-okteto
-4. Execute below commands
-
-```sh
-cd cronjobs
-
-okteto login
-
-# Please edit environment variables  (`WEBPAGE_SUMMARIZER_API_KEY` and `WEBPAGE_SUMMARIZER_API_URL`) to match your environment.
-# Note that you have to encode the value with base64 when you edit the k8s secret.
-vim manifests/kubernetes.yaml
-
-kubectl apply -f manifests/secrets.yaml
-kubectl apply -f manifests/kubernetes.yaml
-```
+1. Add secrets to GitHub repository to use GitHub Actions.
+2. Uncomment cron expressions in .github/workflows/html-to-markdown.yml.
 
 ### (Optional) Bookmarklet
 
