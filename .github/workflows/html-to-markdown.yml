@@ -1,0 +1,43 @@
+name: HTML to Markdown
+
+on:
+  schedule:
+    - cron: '*/1 * * * *'
+
+defaults:
+  run:
+    working-directory: ./cronjobs
+
+jobs:
+  html-to-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+
+      - name: Convert HTML to Markdown
+        env:
+          WEBPAGE_SUMMARIZER_API_URL: ${{ secrets.WEBPAGE_SUMMARIZER_API_URL }}
+          WEBPAGE_SUMMARIZER_API_KEY: ${{ secrets.WEBPAGE_SUMMARIZER_API_KEY }}
+        run: |
+          set -e
+          url_list=$(curl -s -L $WEBPAGE_SUMMARIZER_API_URL?apiKey=$WEBPAGE_SUMMARIZER_API_KEY -H "Content-Type: application/json" | jq -r '.urls[]')
+          echo ${url_list}
+          for url in ${url_list}; do
+            html=$(curl -s -L ${url})
+            tmpfile=$(mktemp)
+            echo "${html}" > "${tmpfile}"
+            node dist/main.js "${url}" "${tmpfile}"
+            rm "${tmpfile}"
+          done
