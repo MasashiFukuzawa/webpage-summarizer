@@ -28,16 +28,23 @@ jobs:
 
       - name: Convert HTML to Markdown
         env:
+          USERS_INFO_URL: ${{ secrets.USERS_INFO_URL }}
+          USERS_INFO_API_KEY: ${{ secrets.USERS_INFO_API_KEY }}
           WEBPAGE_SUMMARIZER_API_URL: ${{ secrets.WEBPAGE_SUMMARIZER_API_URL }}
           WEBPAGE_SUMMARIZER_API_KEY: ${{ secrets.WEBPAGE_SUMMARIZER_API_KEY }}
         run: |
+          #!/bin/bash
           set -e
-          url_list=$(curl -s -L $WEBPAGE_SUMMARIZER_API_URL?apiKey=$WEBPAGE_SUMMARIZER_API_KEY -H "Content-Type: application/json" | jq -r '.urls[]')
-          echo ${url_list}
-          for url in ${url_list}; do
-            html=$(curl -s -L ${url})
-            tmpfile=$(mktemp)
-            echo "${html}" > "${tmpfile}"
-            node dist/main.js "${url}" "${tmpfile}"
-            rm "${tmpfile}"
+          WEBPAGE_SUMMARIZER_API_URLS=$(curl -s -L ${USERS_INFO_URL}?apiKey=${USERS_INFO_API_KEY} -H "Content-Type: application/json" | jq -r '.urls[]')
+          if [ -z "$WEBPAGE_SUMMARIZER_API_URLS" ]; then
+            WEBPAGE_SUMMARIZER_API_URLS=(${WEBPAGE_SUMMARIZER_API_URL})
+          fi
+          for WEBPAGE_SUMMARIZER_API_URL in ${WEBPAGE_SUMMARIZER_API_URLS}; do
+            url_list=$(curl -s -L ${WEBPAGE_SUMMARIZER_API_URL}?apiKey=${WEBPAGE_SUMMARIZER_API_KEY} -H "Content-Type: application/json" | jq -r '.urls[]')
+            for url in ${url_list}; do
+              html=$(curl -s -L ${url})
+              tmpfile=$(mktemp)
+              node ./dist/main.js "${url}" "${tmpfile}" "${WEBPAGE_SUMMARIZER_API_URL}"
+              rm "${tmpfile}"
+            done
           done
