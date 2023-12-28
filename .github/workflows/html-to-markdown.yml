@@ -2,7 +2,9 @@ name: HTML to Markdown
 
 on:
   schedule:
-    - cron: '*/1 * * * *'
+    # The shortest interval you can run scheduled workflows is once every 5 minutes.
+    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+    - cron: '*/5 * * * *'
 
 defaults:
   run:
