@@ -10,17 +10,13 @@ dotenv.config();
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      WEBPAGE_SUMMARIZER_API_URL: string;
       WEBPAGE_SUMMARIZER_API_KEY: string;
     }
   }
 }
 
-(async (url: string, htmlFile: string) => {
+(async (url: string, htmlFile: string, gasUrl: string) => {
   console.log('script started.');
-
-  console.log('htmlFile', htmlFile.trim());
-  console.log('url', url.trim());
 
   try {
     console.log('get body.');
@@ -51,7 +47,7 @@ declare global {
     const trimmedMarkdown = markdown.replace(/\([^()]*\)/g, '');
 
     console.log('post to api.');
-    const response = await fetch(process.env.WEBPAGE_SUMMARIZER_API_URL, {
+    const response = await fetch(gasUrl, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -64,12 +60,11 @@ declare global {
       redirect: 'follow',
     });
 
-    const message = await response.text();
-    console.log('response', response.status, message);
+    console.log('response', response.status);
   } catch (error) {
     console.error('error', error);
     return;
   } finally {
     console.log('script finished.');
   }
-})(process.argv[2], process.argv[3]);
+})(process.argv[2], process.argv[3], process.argv[4]);
