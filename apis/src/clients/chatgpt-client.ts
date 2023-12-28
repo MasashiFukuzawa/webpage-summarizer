@@ -36,7 +36,7 @@ const requestToChatGPT = (prompt: Prompt, input: string): string => {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
         },
         payload: JSON.stringify({
-          model: 'gpt-3.5-turbo-16k',
+          model: 'gpt-4-1106-preview',
           messages: [{ role: 'user', content: buildPrompt(prompt, input) }],
         }),
         muteHttpExceptions: true,
