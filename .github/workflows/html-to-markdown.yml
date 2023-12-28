@@ -5,6 +5,7 @@ on:
     # The shortest interval you can run scheduled workflows is once every 5 minutes.
     # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
     - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 defaults:
   run:
@@ -41,12 +42,13 @@ jobs:
           if [ -z "$WEBPAGE_SUMMARIZER_API_URLS" ]; then
             WEBPAGE_SUMMARIZER_API_URLS=(${WEBPAGE_SUMMARIZER_API_URL})
           fi
-          for WEBPAGE_SUMMARIZER_API_URL in ${WEBPAGE_SUMMARIZER_API_URLS}; do
-            url_list=$(curl -s -L ${WEBPAGE_SUMMARIZER_API_URL}?apiKey=${WEBPAGE_SUMMARIZER_API_KEY} -H "Content-Type: application/json" | jq -r '.urls[]')
+          for target_url in ${WEBPAGE_SUMMARIZER_API_URLS}; do
+            url_list=$(curl -s -L ${target_url}?apiKey=${WEBPAGE_SUMMARIZER_API_KEY} -H "Content-Type: application/json" | jq -r '.urls[]')
             for url in ${url_list}; do
               html=$(curl -s -L ${url})
               tmpfile=$(mktemp)
-              node ./dist/main.js "${url}" "${tmpfile}" "${WEBPAGE_SUMMARIZER_API_URL}"
+              echo "${html}" > "${tmpfile}"
+              node ./dist/main.js "${url}" "${tmpfile}" "${target_url}"
               rm "${tmpfile}"
             done
           done
