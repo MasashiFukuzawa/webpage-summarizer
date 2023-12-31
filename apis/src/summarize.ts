@@ -14,17 +14,7 @@ const isWithinOneMinute = (now: Date, lastExecution: string) => {
   return now.getTime() - new Date(lastExecution).getTime() < 1 * 60 * 1000;
 };
 
-const summarize = (e: GoogleAppsScript.Events.SheetsOnChange) => {
-  const sheet = e.source.getActiveSheet();
-
-  if (sheet.getName() !== 'summaries') {
-    return;
-  }
-
-  if (e.changeType !== 'EDIT') {
-    return;
-  }
-
+const summarize = () => {
   const now = new Date();
   const lastExecution =
     PropertiesService.getScriptProperties().getProperty('lastExecution');

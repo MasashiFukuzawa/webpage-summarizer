@@ -1,11 +1,12 @@
-const setTriggers = () => {
-  const functions = ['invokeCronjob', 'summarize'];
-  functions.forEach((func) => {
-    ScriptApp.newTrigger(func)
-      .forSpreadsheet(SpreadsheetApp.getActiveSpreadsheet())
-      .onChange()
-      .create();
-  });
+const createTriggerForSummarizeFunction = () => {
+  ScriptApp.newTrigger('summarize').timeBased().everyMinutes(1).create();
+};
+
+const createTriggerForInvokeCronjobFunction = () => {
+  ScriptApp.newTrigger('invokeCronjob')
+    .forSpreadsheet(SpreadsheetApp.getActiveSpreadsheet())
+    .onChange()
+    .create();
 };
 
 function deleteTriggers() {
