@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: 'npm'
-    directory: 'apis/'
+    directory: 'webpage-summarizer/'
     schedule:
       interval: 'weekly'
       day: 'saturday'
