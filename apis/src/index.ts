@@ -8,13 +8,7 @@ const doGet = (
   e: GoogleAppsScript.Events.DoGet
 ): GoogleAppsScript.Content.TextOutput => {
   authorize(e.parameter.apiKey);
-
-  const filter = (row: Summary) => !!row.url && !row.content;
-
-  const { rows } = getSummaryData(filter);
-
-  const urls = rows.map((row) => row.url);
-
+  const urls = fetchTargetUrls();
   return ContentService.createTextOutput(JSON.stringify({ urls })).setMimeType(
     ContentService.MimeType.JSON
   );

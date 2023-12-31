@@ -12,8 +12,7 @@ const today = (): string => dayjs.dayjs().format('YYYY/M/D');
 const getSheet = (
   sheetName: 'summaries' | 'prompts' | 'error_logs' | 'latest_summaries'
 ): GoogleAppsScript.Spreadsheet.Sheet => {
-  const spreadsheetId =
-    PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID')!;
+  const spreadsheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
   const sheet =
     SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName)!;
   return sheet;
