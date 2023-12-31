@@ -18,10 +18,12 @@ tree . -I node_modules
 │   │   ├── appsscript.json
 │   │   ├── auth.ts
 │   │   ├── clients
-│   │   │   └── chatgpt-client.ts
+│   │   │   ├── chatgpt-client.ts
+│   │   │   └── github-client.ts
 │   │   ├── fetch-from-spreadsheet.ts
 │   │   ├── filter-latest-summaries.ts
 │   │   ├── index.ts
+│   │   ├── invoke-cronjob.ts
 │   │   ├── log-error.ts
 │   │   ├── schema.ts
 │   │   ├── summarize.ts
@@ -39,10 +41,11 @@ tree . -I node_modules
 └── scripts
     └── bookmarklet
         ├── bookmarklet-formatter.sh
+        ├── sample_result.txt
         ├── webpage-summary-bookmarklet.js
         └── webpage-summary-bookmarklet.txt
 
-8 directories, 24 files
+8 directories, 27 files
 ```
 
 ## Setup
@@ -80,6 +83,10 @@ clasp open
 - OPENAI_API_KEY: Your OpenAI API Key
 - SPREADSHEET_ID: Your Spreadsheet ID
 - WEBPAGE_SUMMARIZER_API_KEY: Any string you generate for easy authentication in Google Apps Script
+- GITHUB_TOKEN: Your GitHub Personal Access Token
+- GITHUB_OWNER: Your GitHub username
+- GITHUB_REPO: Your GitHub repository name
+- GITHUB_WORKFLOW_ID: Your GitHub Actions workflow ID
 
 5. Prepare spreadsheet as follows
 

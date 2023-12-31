@@ -2,11 +2,13 @@ const createTriggerForSummarizeFunction = () => {
   ScriptApp.newTrigger('summarize').timeBased().everyMinutes(1).create();
 };
 
-function deleteTriggerForSummarizeFunction() {
+const createTriggerForInvokeCronjobFunction = () => {
+  ScriptApp.newTrigger('invokeCronjob').timeBased().everyMinutes(1).create();
+};
+
+function deleteTriggers() {
   const triggers = ScriptApp.getProjectTriggers();
   triggers.forEach((trigger) => {
-    if (trigger.getHandlerFunction() === 'summarize') {
-      ScriptApp.deleteTrigger(trigger);
-    }
+    ScriptApp.deleteTrigger(trigger);
   });
 }
