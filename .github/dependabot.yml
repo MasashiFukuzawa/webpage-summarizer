@@ -13,7 +13,7 @@ updates:
       timezone: 'Asia/Tokyo'
 
   - package-ecosystem: 'npm'
-    directory: 'cronjobs/'
+    directory: 'html2markdown/'
     schedule:
       interval: 'weekly'
       day: 'saturday'
