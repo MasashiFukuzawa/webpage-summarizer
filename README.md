@@ -21,6 +21,7 @@ tree . -I node_modules
 │   │   │   ├── chatgpt-client.ts
 │   │   │   └── github-client.ts
 │   │   ├── fetch-from-spreadsheet.ts
+│   │   ├── fetch-target-urls.ts
 │   │   ├── filter-latest-summaries.ts
 │   │   ├── index.ts
 │   │   ├── invoke-cronjob.ts
@@ -45,7 +46,7 @@ tree . -I node_modules
         ├── webpage-summary-bookmarklet.js
         └── webpage-summary-bookmarklet.txt
 
-8 directories, 27 files
+8 directories, 28 files
 ```
 
 ## Setup
@@ -80,13 +81,12 @@ clasp open
 
 4. Set environment variables
 
-- OPENAI_API_KEY: Your OpenAI API Key
-- SPREADSHEET_ID: Your Spreadsheet ID
-- WEBPAGE_SUMMARIZER_API_KEY: Any string you generate for easy authentication in Google Apps Script
-- GITHUB_TOKEN: Your GitHub Personal Access Token
 - GITHUB_OWNER: Your GitHub username
 - GITHUB_REPO: Your GitHub repository name
+- GITHUB_TOKEN: Your GitHub Personal Access Token
 - GITHUB_WORKFLOW_ID: Your GitHub Actions workflow ID
+- OPENAI_API_KEY: Your OpenAI API Key
+- WEBPAGE_SUMMARIZER_API_KEY: Any string you generate for easy authentication in Google Apps Script
 
 5. Prepare spreadsheet as follows
 
@@ -110,7 +110,7 @@ clasp open
 
 6. Publish API
 7. Copy your API URL and WEBPAGE_SUMMARIZER_API_KEY
-8. Set triggers if needed
+8. Set triggers by executing `setTriggers` function on Google Apps Script
 
 ### Cronjobs
 
