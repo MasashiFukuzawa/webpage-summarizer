@@ -1,11 +1,15 @@
 name: HTML to Markdown
 
 on:
-  # NOTE: The scheduler for GitHub Actions can only be executed at a minimum interval of 5 minutes
-  # and does not reliably start processing every 5 minutes.
-  # Therefore, I am using the scheduler in Google Apps Script to initiate the job every minute.
-  # For this reason, I have not specified a cron expression here.
   workflow_dispatch:
+    inputs:
+      spreadsheetId:
+        description: 'Google Spreadsheet Id'
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 defaults:
   run:
@@ -38,17 +42,19 @@ jobs:
         run: |
           #!/bin/bash
           set -e
-          WEBPAGE_SUMMARIZER_API_URLS=$(curl -s -L ${USERS_INFO_URL}?apiKey=${USERS_INFO_API_KEY} -H "Content-Type: application/json" | jq -r '.urls[]')
-          if [ -z "$WEBPAGE_SUMMARIZER_API_URLS" ]; then
-            WEBPAGE_SUMMARIZER_API_URLS=(${WEBPAGE_SUMMARIZER_API_URL})
+
+          if [ -z "${USERS_INFO_URL}" ]; then
+              gas_url="${WEBPAGE_SUMMARIZER_API_URL}"
+          else
+              gas_url=$(curl -s -L "${USERS_INFO_URL}?apiKey=${USERS_INFO_API_KEY}&spreadsheetId=${{ github.event.inputs.spreadsheetId }}" -H "Content-Type: application/json" | jq -r '.url')
           fi
-          for target_url in ${WEBPAGE_SUMMARIZER_API_URLS}; do
-            url_list=$(curl -s -L ${target_url}?apiKey=${WEBPAGE_SUMMARIZER_API_KEY} -H "Content-Type: application/json" | jq -r '.urls[]')
-            for url in ${url_list}; do
-              html=$(curl -s -L ${url})
+
+          article_url_list=$(curl -s -L ${gas_url}?apiKey=${WEBPAGE_SUMMARIZER_API_KEY} -H "Content-Type: application/json" | jq -r '.urls[]')
+
+          for article_url in ${article_url_list}; do
+              html=$(curl -s -L ${article_url})
               tmpfile=$(mktemp)
               echo "${html}" > "${tmpfile}"
-              node ./dist/main.js "${url}" "${tmpfile}" "${target_url}"
+              node ./dist/main.js "${article_url}" "${tmpfile}" "${gas_url}"
               rm "${tmpfile}"
-            done
           done
