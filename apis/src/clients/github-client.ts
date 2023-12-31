@@ -8,7 +8,7 @@ const GITHUB_REPO =
 const GITHUB_WORKFLOW_ID =
   PropertiesService.getScriptProperties().getProperty('GITHUB_WORKFLOW_ID');
 
-const triggerGitHubActionsJob = (): void => {
+const triggerGitHubActionsJob = (spreadsheetId: string): void => {
   const response = UrlFetchApp.fetch(
     `${GITHUB_BASE_URL}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${GITHUB_WORKFLOW_ID}/dispatches`,
     {
@@ -19,6 +19,9 @@ const triggerGitHubActionsJob = (): void => {
       },
       payload: JSON.stringify({
         ref: 'master',
+        inputs: {
+          spreadsheetId,
+        },
       }),
       muteHttpExceptions: true,
     }
