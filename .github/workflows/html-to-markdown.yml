@@ -1,10 +1,10 @@
 name: HTML to Markdown
 
 on:
-  schedule:
-    # The shortest interval you can run scheduled workflows is once every 5 minutes.
-    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
-    - cron: '*/5 * * * *'
+  # NOTE: The scheduler for GitHub Actions can only be executed at a minimum interval of 5 minutes
+  # and does not reliably start processing every 5 minutes.
+  # Therefore, I am using the scheduler in Google Apps Script to initiate the job every minute.
+  # For this reason, I have not specified a cron expression here.
   workflow_dispatch:
 
 defaults:
