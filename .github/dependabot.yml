@@ -6,14 +6,14 @@
 version: 2
 updates:
   - package-ecosystem: 'npm'
-    directory: 'apis/'
+    directory: 'webpage-summarizer/'
     schedule:
       interval: 'weekly'
       day: 'saturday'
       timezone: 'Asia/Tokyo'
 
   - package-ecosystem: 'npm'
-    directory: 'cronjobs/'
+    directory: 'html2markdown/'
     schedule:
       interval: 'weekly'
       day: 'saturday'

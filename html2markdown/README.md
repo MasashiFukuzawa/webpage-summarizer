@@ -1,7 +1,7 @@
 ## Setup
 
 ```sh
-cd cronjobs
+cd html2markdown
 yarn install
 chmod +x dist/main.js
 ```
