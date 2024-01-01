@@ -1,4 +1,4 @@
-const invokeCronjob = (e: GoogleAppsScript.Events.SheetsOnChange) => {
+const invokeHtmlToMarkdown = (e: GoogleAppsScript.Events.SheetsOnChange) => {
   const sheet = e.source.getActiveSheet();
 
   if (sheet.getName() !== 'summaries') {
@@ -14,8 +14,8 @@ const invokeCronjob = (e: GoogleAppsScript.Events.SheetsOnChange) => {
     return;
   }
 
-  console.log('Invoking cronjob...');
+  console.log('Invoking html2markdown job...');
   const spreadsheetId = SpreadsheetApp.getActiveSpreadsheet().getId();
   triggerGitHubActionsJob(spreadsheetId);
-  console.log('Finish invoking cronjob.');
+  console.log('Finish invoking html2markdown job.');
 };

@@ -15,13 +15,6 @@ type SummaryData = {
 type Prompt = {
   instruction: string;
   constraints: string;
-  type: 'partial' | 'full';
-  rowNum: number;
-};
-
-type PromptData = {
-  partialPrompt: Prompt;
-  fullPrompt: Prompt;
 };
 
 type Message = {

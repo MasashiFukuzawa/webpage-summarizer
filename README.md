@@ -19,6 +19,7 @@ tree . -I node_modules
 │   ├── tsconfig.json
 │   └── yarn.lock
 └── webpage-summarizer
+    ├── README.md
     ├── package-lock.json
     ├── package.json
     ├── src
@@ -30,7 +31,7 @@ tree . -I node_modules
     │   │   ├── chatgpt-client.ts
     │   │   └── github-client.ts
     │   ├── jobs
-    │   │   ├── invoke-cronjob.ts
+    │   │   ├── invoke-html-to-markdown.ts
     │   │   └── summarize.ts
     │   └── modules
     │       ├── auth.ts
@@ -39,10 +40,13 @@ tree . -I node_modules
     │       ├── filter-latest-summaries.ts
     │       ├── log-error.ts
     │       ├── schema.ts
-    │       └── triggers.ts
+    │       └── setup.ts
+    ├── tools
+    │   ├── deploy.sh
+    │   └── open.sh
     └── tsconfig.json
 
-8 directories, 24 files
+9 directories, 27 files
 ```
 
 ## Setup
@@ -95,11 +99,9 @@ clasp open
   - date (string)
 - `prompts` sheet
   - instruction (string)
-    - Write your own prompts for ChatGPT API. Note that you need two prompts for partial and full summary.
+    - Write your own prompts for ChatGPT API.
   - constraints (string)
-    - Write your own prompts for ChatGPT API. Note that you need two prompts for partial and full summary.
-  - type (string)
-    - `partial` | `full`
+    - Write your own prompts for ChatGPT API.
 - `latest_summaries` sheet
   - summary (string)
   - url (string)
