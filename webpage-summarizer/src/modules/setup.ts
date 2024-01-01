@@ -38,9 +38,9 @@ const createTriggerForSummarizeFunction = () => {
   ScriptApp.newTrigger('summarize').timeBased().everyMinutes(1).create();
 };
 
-// Prepare a trigger for invoking a cronjob.
-const createTriggerForInvokeCronjobFunction = function () {
-  ScriptApp.newTrigger('invokeCronjob')
+// Prepare a trigger for invoking a html2markdown.
+const createTriggerForinvokeHtmlToMarkdownFunction = function () {
+  ScriptApp.newTrigger('invokeHtmlToMarkdown')
     .forSpreadsheet(SpreadsheetApp.getActiveSpreadsheet())
     .onChange()
     .create();
@@ -59,5 +59,5 @@ const setUp = () => {
   setEnvironmentVariables();
   deleteTriggers();
   createTriggerForSummarizeFunction();
-  createTriggerForInvokeCronjobFunction();
+  createTriggerForinvokeHtmlToMarkdownFunction();
 };
