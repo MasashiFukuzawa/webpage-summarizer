@@ -4,6 +4,27 @@
 
 System for summarizing the content of webpages by analyzing their HTML. Easily extract key information from any webpage and view it in a condensed format.
 
+## Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant GoogleSpreadsheet as Google Spreadsheet
+    participant GAS as Google Apps Script
+    participant GitHubActions as GitHub Actions
+    participant ChatGPTAPI as ChatGPT API
+
+    User->>GoogleSpreadsheet: Enter article URL
+    GoogleSpreadsheet->>GAS: Trigger on change
+    GAS->>GitHubActions: Start job
+    GitHubActions->>GitHubActions: Retrieve HTML from URL entered by User
+    GitHubActions->>GitHubActions: Execute html2markdown
+    GitHubActions->>GAS: POST API with converted markdown to save in Spreadsheet
+    GAS->>ChatGPTAPI: Regular batch to send markdown content for summarization
+    ChatGPTAPI-->>GAS: Return summary
+    GAS->>GoogleSpreadsheet: Transcribe summary in Spreadsheet
+```
+
 ## Directory Structure
 
 ```sh
