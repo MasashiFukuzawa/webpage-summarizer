@@ -108,7 +108,7 @@ clasp open
 
 6. Publish API
 7. Copy your Web App URL (`WEBPAGE_SUMMARIZER_API_URL`) and `WEBPAGE_SUMMARIZER_API_KEY`
-8. Set triggers by executing `setTriggers` function on Google Apps Script
+8. Set triggers by executing `setUp` function on Google Apps Script
 
 ### GitHub Actions
 
