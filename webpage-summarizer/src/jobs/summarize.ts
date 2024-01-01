@@ -31,13 +31,13 @@ const summarize = () => {
     return;
   }
 
-  const { fullPrompt } = getPromptData();
+  const prompt = getPrompt();
 
   rows.forEach((row) => {
     updateCell(summarySheet, row, 'Processing...', lastColumn);
 
     try {
-      const fullSummary = requestToChatGPT(fullPrompt, row.content);
+      const fullSummary = requestToChatGPT(prompt, row.content);
 
       updateCell(summarySheet, row, fullSummary, lastColumn);
     } catch (e) {

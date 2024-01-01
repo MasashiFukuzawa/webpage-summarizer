@@ -95,11 +95,9 @@ clasp open
   - date (string)
 - `prompts` sheet
   - instruction (string)
-    - Write your own prompts for ChatGPT API. Note that you need two prompts for partial and full summary.
+    - Write your own prompts for ChatGPT API.
   - constraints (string)
-    - Write your own prompts for ChatGPT API. Note that you need two prompts for partial and full summary.
-  - type (string)
-    - `partial` | `full`
+    - Write your own prompts for ChatGPT API.
 - `latest_summaries` sheet
   - summary (string)
   - url (string)

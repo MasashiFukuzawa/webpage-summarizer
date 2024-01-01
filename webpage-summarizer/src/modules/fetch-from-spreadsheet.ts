@@ -60,7 +60,7 @@ const getSummaryData = (filter: (row: Summary) => boolean): SummaryData => {
   return { rows, summarySheet, lastColumn };
 };
 
-const getPromptData = (): PromptData => {
+const getPrompt = (): Prompt => {
   const promptSheet = getSheet('prompts');
 
   const lastRow = promptSheet.getLastRow();
@@ -68,21 +68,16 @@ const getPromptData = (): PromptData => {
 
   const instructionColumnNum = 1;
   const constraintsColumnNum = 2;
-  const typeColumnNum = 3;
 
   const prompts: Prompt[] = getFullData(promptSheet, lastRow, lastColumn)
-    .map((row, i) => {
+    .map((row) => {
       return {
         // index starts from 0, but row number starts from 1.
         instruction: row[instructionColumnNum - 1],
         constraints: row[constraintsColumnNum - 1],
-        type: row[typeColumnNum - 1],
-        rowNum: i + START_ROW_NUM,
       };
     })
     .filter((row) => !!row);
-  const partialPrompt = prompts.find((prompt) => prompt.type === 'partial')!;
-  const fullPrompt = prompts.find((prompt) => prompt.type === 'full')!;
 
-  return { partialPrompt, fullPrompt };
+  return prompts[0];
 };

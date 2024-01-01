@@ -4,7 +4,7 @@ const OPENAI_API_KEY =
 const MAX_RETRY_COUNT = 3;
 const RETRY_STATUS_CODES = [429, 500, 502, 503, 504];
 
-const buildPrompt = (prompt: Prompt, input: string) => {
+const buildContent = (prompt: Prompt, input: string) => {
   return `# 命令
 ${prompt.instruction}
 
@@ -37,7 +37,7 @@ const requestToChatGPT = (prompt: Prompt, input: string): string => {
         },
         payload: JSON.stringify({
           model: 'gpt-4-1106-preview',
-          messages: [{ role: 'user', content: buildPrompt(prompt, input) }],
+          messages: [{ role: 'user', content: buildContent(prompt, input) }],
         }),
         muteHttpExceptions: true,
       }
