@@ -57,6 +57,7 @@ const deleteTriggers = () => {
 // A function to collectively execute the above. It only needs to be run once.
 const setUp = () => {
   setEnvironmentVariables();
+  deleteTriggers();
   createTriggerForSummarizeFunction();
   createTriggerForInvokeCronjobFunction();
 };
