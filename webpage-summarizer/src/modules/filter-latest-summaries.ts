@@ -1,6 +1,8 @@
-const filterLatestSummaries = () => {
+const filterLatestSummaries = (days: number = 3) => {
+  const today = dayjs.dayjs();
   const filter = (row: Summary) => {
-    return row.date === today() && !!row.summary;
+    const isRecent = dayjs.dayjs(row.date).isAfter(today.subtract(days, 'day'));
+    return !!row.summary && isRecent;
   };
 
   const latestSummaries = getSummaryData(filter).rows;
