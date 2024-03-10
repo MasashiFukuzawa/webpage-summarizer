@@ -12,7 +12,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/google-apps-script": "^1.0.82",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.2",
     "dayjs": "^1.11.10"
   }
 }
